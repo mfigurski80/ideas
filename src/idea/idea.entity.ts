@@ -1,4 +1,3 @@
-// import { Entity } from 'typeorm';
 import {
   Entity,
   PrimaryGeneratedColumn,
