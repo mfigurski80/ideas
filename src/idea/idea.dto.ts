@@ -1,4 +1,9 @@
-export interface IdeaDTO {
-  idea:string,
-  description:string,
+import { IsString } from 'class-validator';
+
+export class IdeaDTO {
+  @IsString()
+  idea:string;
+
+  @IsString()
+  description:string;
 }
