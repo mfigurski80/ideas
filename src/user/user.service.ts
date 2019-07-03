@@ -23,7 +23,7 @@ export class UserService {
     const { username, password } = data;
     const user = await this.userRepository.findOne({ where: { username }});
     if (!user || await !user.comparePassword(password))
-      throw new HttpException('Invalid username/password', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Invalid username/password', HttpStatus.FORBIDDEN);
     return user.toResponseObject();
   }
 
@@ -31,7 +31,7 @@ export class UserService {
     const { username } = data;
     let user = await this.userRepository.findOne({ where: { username }});
     if (user)
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User already exists', HttpStatus.FORBIDDEN);
     user = await this.userRepository.create(data);
     await this.userRepository.save(user);
     return user.toResponseObject();
