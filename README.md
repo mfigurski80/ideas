@@ -18,3 +18,12 @@ A place to see and post ideas in the style of reddit and twitter. This is follow
 - GraphQL API - NestJS
 - Rest frontend - Angular with NGRX
 - GraphQL Frontend - React (Native?) with Apollo Client
+
+## Installation
+
+```` shell
+git clone https://github.com/mfigurski80/ideas.git;
+cd ideas;
+./db/start.sh; # Note, this script requires docker to be installed
+npm run start;
+````
