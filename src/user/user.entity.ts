@@ -1,23 +1,35 @@
-import { Logger } from '@nestjs/common';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Column,
+  BeforeInsert,
+  OneToMany
+} from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 
 import { UserRO } from './user.dto';
+import { IdeaEntity } from '../idea/idea.entity';
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
-  id:string;
+  id: string;
 
   @CreateDateColumn()
-  created:Date;
+  created: Date;
 
   @Column({ type: 'varchar', unique: true })
-  username:string;
+  username: string;
 
   @Column('text')
-  password:string;
+  password: string;
+
+
+  @OneToMany(type => IdeaEntity, idea => idea.author)
+  ideas: Array<IdeaEntity>;
+
 
 
 
@@ -26,24 +38,24 @@ export class UserEntity {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  toResponseObject(showToken:boolean = true):UserRO {
-    const { id, created, username, token } = this;
-    const responseObject:UserRO = { id, created, username };
+  toResponseObject(showToken: boolean = false): UserRO {
+    const { id, created, username, token, ideas } = this;
+    const responseObject: UserRO = { id, created, username };
     if (showToken) responseObject.token = token;
+    if (ideas) responseObject.ideas = ideas.map(idea => idea.toResponseObject());
     return responseObject
   }
 
-  async comparePassword(attempt:string) {
-    Logger.log(this.password,'user.entity');
+  async comparePassword(attempt: string) {
     return await bcrypt.compare(attempt, this.password);
   }
 
   private get token() {
     const { id, username } = this;
     return jwt.sign(
-      {id, username},
+      { id, username },
       process.env.SECRET,
-      {expiresIn: '7d'}
+      { expiresIn: '7d' }
     );
   }
 

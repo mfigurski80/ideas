@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -10,31 +10,32 @@ export class UserService {
 
   constructor(
     @InjectRepository(UserEntity)
-    private userRepository:Repository<UserEntity>
-  ) {}
+    private userRepository: Repository<UserEntity>
+  ) { }
 
 
-  async showAll():Promise<Array<UserRO>> {
-    const users = await this.userRepository.find();
-    return users.map(user => user.toResponseObject(false));
+  async showAll(): Promise<Array<UserRO>> {
+    const users = await this.userRepository.find({ relations: ['ideas'] });
+    return users.map(user => user.toResponseObject());
   }
 
-  async login(data:UserDTO):Promise<UserRO> {
+  async login(data: UserDTO): Promise<UserRO> {
     const { username, password } = data;
-    const user = await this.userRepository.findOne({ where: { username }});
+    const user = await this.userRepository.findOne({ where: { username } });
     if (!user || await !user.comparePassword(password))
       throw new HttpException('Invalid username/password', HttpStatus.FORBIDDEN);
-    return user.toResponseObject();
+    return user.toResponseObject(true);
   }
 
-  async register(data:UserDTO):Promise<UserRO> {
+  async register(data: UserDTO): Promise<UserRO> {
     const { username } = data;
-    let user = await this.userRepository.findOne({ where: { username }});
+    let user = await this.userRepository.findOne({ where: { username } });
     if (user)
       throw new HttpException('User already exists', HttpStatus.FORBIDDEN);
     user = await this.userRepository.create(data);
     await this.userRepository.save(user);
-    return user.toResponseObject();
+    return user.toResponseObject(true);
   }
+
 
 }
