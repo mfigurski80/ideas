@@ -6,7 +6,7 @@
   "password": "secret",
   "database": "ideas",
   "synchronize": true,
-  "logging": true,
+  "logging": false,
   "entities": [
     "./dist/**/*.entity.js"
   ]

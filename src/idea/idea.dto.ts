@@ -17,4 +17,6 @@ export class IdeaRO {
   idea: string;
   description: string;
   author?: UserRO;  // user reference
+  upvotes?: Array<UserRO> | number;
+  downvotes?: Array<UserRO> | number;
 }

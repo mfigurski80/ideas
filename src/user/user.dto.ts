@@ -15,4 +15,5 @@ export class UserRO { // response object
   created: Date;
   token?: string;
   ideas?: Array<IdeaRO>
+  bookmarks?: Array<IdeaRO>
 }
