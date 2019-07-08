@@ -1,6 +1,7 @@
 import { IsString } from 'class-validator';
 
 import { UserRO } from '../user/user.dto';
+import { CommentDTO } from 'src/comment/comment.dto';
 
 export class IdeaDTO {
   @IsString()
@@ -19,4 +20,5 @@ export class IdeaRO {
   author?: UserRO;  // user reference
   upvotes?: Array<UserRO> | number;
   downvotes?: Array<UserRO> | number;
+  comments?: Array<CommentDTO> | number;
 }

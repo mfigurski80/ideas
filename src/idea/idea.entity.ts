@@ -7,11 +7,12 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm'; // https://typeorm.io/#/
 
 import { UserEntity } from '../user/user.entity';
 import { IdeaRO } from './idea.dto';
-import { UserRO } from '../user/user.dto';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity('idea')
 export class IdeaEntity {
@@ -43,20 +44,26 @@ export class IdeaEntity {
   @JoinTable()
   downvotes: Array<UserEntity>;
 
+  @OneToMany(type => CommentEntity, comment => comment.idea, { cascade: true })
+  comments: Array<CommentEntity>
 
 
 
-  toResponseObject(isDetailedVotes: boolean = false): IdeaRO {
-    let { id, created, updated, idea, description, author, upvotes, downvotes } = this;
+  toResponseObject(isDetailed: boolean = false): IdeaRO {
+    let { id, created, updated, idea, description, author, upvotes, downvotes, comments } = this;
     const responseObject: IdeaRO = { id, created, updated, idea, description };
     if (author) responseObject.author = author.toResponseObject();
     if (upvotes) {
-      if (isDetailedVotes) responseObject.upvotes = upvotes.map(user => user.toResponseObject());
+      if (isDetailed) responseObject.upvotes = upvotes.map(user => user.toResponseObject());
       else responseObject.upvotes = upvotes.length;
     }
     if (downvotes) {
-      if (isDetailedVotes) responseObject.downvotes = downvotes.map(user => user.toResponseObject());
+      if (isDetailed) responseObject.downvotes = downvotes.map(user => user.toResponseObject());
       else responseObject.downvotes = downvotes.length;
+    }
+    if (comments) {
+      if (isDetailed) responseObject.comments = comments.map(comment => comment.toResponseObject());
+      else responseObject.comments = comments.length;
     }
     return responseObject;
   }
