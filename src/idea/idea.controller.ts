@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UsePipes, UseGuards, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UsePipes, UseGuards, Logger, Query } from '@nestjs/common';
 
 
 import { IdeaService } from './idea.service';
@@ -14,8 +14,8 @@ export class IdeaController {
   constructor(private ideaService: IdeaService) { }
 
   @Get()
-  showAllIdeas() {
-    return this.ideaService.showAll();
+  showAllIdeas(@Query('page') page: number) {
+    return this.ideaService.showAll(page);
   }
 
   @Post()
